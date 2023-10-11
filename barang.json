@@ -1,0 +1,17 @@
+[
+    {
+        "nama" : "Pisang",
+        "harga" : 30000
+
+    },
+    {
+        "nama": "Jeruk",
+        "harga": 40000
+
+    },
+    {
+        "nama": "Apel",
+        "harga": 50000
+
+    }
+]
