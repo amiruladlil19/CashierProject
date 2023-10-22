@@ -2,9 +2,9 @@ import pandas as pd
 import json
 
 class Transaction:
-    def __init__(self, item_list, columns=['Item', 'Price', 'Qty', 'Total Prices']):
+    def __init__(self, item_list, columns=['Barang', 'Harga', 'Jumlah', 'Total Harga']):
         self.df = pd.DataFrame(columns=columns)
-        self.message = 'Order is valid'
+        self.message = 'Pemesanan sudah benar'
         self.item_list = item_list
     
     def get_price(self, search_name):
@@ -17,11 +17,11 @@ class Transaction:
             data_list = json.load(file)
             
             for data in data_list:
-                if data['item'] == search_name:
-                    return data['price']  
+                if data['nama'] == search_name:
+                    return data['harga']  
             return None
 
-    def add_item(self, item,  qty):
+    def add_item(self, barang, jumlah):
         '''
         Fungsi ini digunakan untuk memasukkan satu buah barang ke daftar belanjaan, rincian yang dimasukkan
         adalah nama barang, harga, dan jumlah. Fungsi akan memeriksa apakah nama barang berupa tipe data 
@@ -29,13 +29,13 @@ class Transaction:
         tidak sesuai, fungsi ini akan memberitahu pengguna untuk memeriksa kembali pesanan.
         '''
         try:
-            price = self.get_price(item)
+            harga = self.get_price(barang)
         except:
-            price = ''
+            harga = ''
        
-        if isinstance(item, str) and isinstance(price, int) and isinstance(qty, int):
-            row_values = [item, price, qty]
-            row_values.append(price*qty)
+        if isinstance(barang, str) and isinstance(harga, int) and isinstance(jumlah, int):
+            row_values = [barang, harga, jumlah]
+            row_values.append(harga*jumlah)
             self.df = pd.concat([self.df, pd.DataFrame([row_values], columns=self.df.columns)], ignore_index=True)
         else:
             print(self.check_order())
@@ -54,7 +54,7 @@ class Transaction:
         Jika ada, rincian tentang barang, harga, dan jumlahnya akan terhapus.
         '''
         try:
-            index_to_delete = self.df.index[self.df['Item'] == item_name].tolist()
+            index_to_delete = self.df.index[self.df['Barang'] == item_name].tolist()
             if index_to_delete:
                 self.df = self.df.drop(index_to_delete)
         except:
@@ -66,11 +66,11 @@ class Transaction:
        dengan yang baru. Total harga barang juga disesuaikan dengan barang yang diedit.
        '''
        try:
-          self.df.loc[self.df['Item'] == item_name, ['Item', 'Price']] = [new_item_name, self.get_price(new_item_name)]
+          self.df.loc[self.df['Barang'] == item_name, ['Barang', 'Harga']] = [new_item_name, self.get_price(new_item_name)]
           for i in range(len(self.df)):
-                self.df.loc[i, 'Total Prices'] = self.df.loc[i, 'Qty']*self.df.loc[i, 'Price']
-                if isinstance(self.df.loc[i, 'Total Prices'], str):
-                    self.df.loc[i, 'Total Prices'] = ''  
+                self.df.loc[i, 'Total Harga'] = self.df.loc[i, 'Jumlah']*self.df.loc[i, 'Harga']
+                if isinstance(self.df.loc[i, 'Total Harga'], str):
+                    self.df.loc[i, 'Total Harga'] = ''  
 
        except:
           pass
@@ -81,11 +81,11 @@ class Transaction:
        dengan jumlah yang diedit.
        '''
        try:
-            self.df.loc[self.df['Item'] == item_name, 'Qty'] = int(new_item_qty)
+            self.df.loc[self.df['Barang'] == item_name, 'Jumlah'] = int(new_item_qty)
             for i in range(len(self.df)):
-                self.df.loc[i, 'Total Prices'] = self.df.loc[i, 'Qty']*self.df.loc[i, 'Price']
-                if isinstance(self.df.loc[i, 'Total Prices'], str):
-                    self.df.loc[i, 'Total Prices'] = ''  
+                self.df.loc[i, 'Total Harga'] = self.df.loc[i, 'Jumlah']*self.df.loc[i, 'Harga']
+                if isinstance(self.df.loc[i, 'Total Harga'], str):
+                    self.df.loc[i, 'Total Harga'] = ''  
        except:
             pass
     '''
@@ -120,14 +120,14 @@ class Transaction:
         if self.df.empty:
             self.message = 'Terdapat kesalahan input data'
         else:
-            if self.df['Item'].apply(lambda x: isinstance(x, str)).all() and self.df['Qty'].apply(lambda x: isinstance(x, int)).all() and self.df['Price'].apply(lambda x: isinstance(x, int)).all():
+            if self.df['Barang'].apply(lambda x: isinstance(x, str)).all() and self.df['Jumlah'].apply(lambda x: isinstance(x, int)).all() and self.df['Harga'].apply(lambda x: isinstance(x, int)).all():
                 self.message = 'Pemesanan sudah benar'
         return self.df, self.message
     
     def total_prices(self):
       try:
             if not self.df.empty:
-                total = self.df['Total Prices'].sum()
+                total = self.df['Total Harga'].sum()
                 if total > 200000:
                     total = total - total*0.05
                 elif total > 300000:

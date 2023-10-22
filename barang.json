@@ -1,17 +1,17 @@
 [
     {
-        "nama" : "Pisang",
-        "harga" : 30000
+        "item" : "Banana",
+        "price" : 30000
 
     },
     {
-        "nama": "Jeruk",
-        "harga": 40000
+        "item": "Orange",
+        "price": 40000
 
     },
     {
-        "nama": "Apel",
-        "harga": 50000
+        "item": "Apple",
+        "price": 50000
 
     }
 ]
