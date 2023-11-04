@@ -9,8 +9,10 @@ class Transaction:
     
     def get_price(self, search_name):
         '''
-        Daftar barang-barang yang bisa dibeli ada di barang.json beserta harganya. 
-        Fungsi ini berfungsi untuk mencari harga barang berdasarkan namanya.
+       
+        This function searches for item's price 
+
+        search_name : string 
         
         '''
         with open(self.item_list, 'r') as file:
@@ -23,10 +25,11 @@ class Transaction:
 
     def add_item(self, item,  qty):
         '''
-        Fungsi ini digunakan untuk memasukkan satu buah barang ke daftar belanjaan, rincian yang dimasukkan
-        adalah nama barang, harga, dan jumlah. Fungsi akan memeriksa apakah nama barang berupa tipe data 
-        string, jumlah barang berupa tipe data integer, dan harga barang berupa tipe data integer. Jika
-        tidak sesuai, fungsi ini akan memberitahu pengguna untuk memeriksa kembali pesanan.
+        This function adds item to the trolley
+
+        item : string (the name of the item that we want to add)
+        qty : int (how many of the item that we want to add)
+        
         '''
         try:
             price = self.get_price(item)
@@ -49,9 +52,9 @@ class Transaction:
 
     def delete_item(self, item_name):
         '''
-        Fungsi ini digunakan untuk menghapus satu rincian barang dari daftar belanjaan. Masukan fungsi ini
-        adalah nama barang. Kemudian, fungsi akan memeriksa apakah nama barang yang dimaksud ada di daftar belanjaan.
-        Jika ada, rincian tentang barang, harga, dan jumlahnya akan terhapus.
+        This function deletes an item
+
+        item_name : string (name of the item that we want to delete)
         '''
         try:
             index_to_delete = self.df.index[self.df['Item'] == item_name].tolist()
@@ -62,8 +65,10 @@ class Transaction:
         
     def update_item_name(self, item_name, new_item_name):
        '''
-       Fungsi ini digunakan untuk mengedit nama barang. Fungsi akan mencari nama barang yang dimaksud dan akan diganti 
-       dengan yang baru. Total harga barang juga disesuaikan dengan barang yang diedit.
+       This function changes an item to another item
+
+       item_name : string (name of the item that we want to change)
+       new_item_name : string (name of the item that we want to change with)
        '''
        try:
           self.df.loc[self.df['Item'] == item_name, ['Item', 'Price']] = [new_item_name, self.get_price(new_item_name)]
@@ -77,8 +82,10 @@ class Transaction:
        
     def update_item_qty(self, item_name, new_item_qty):
        '''
-       Fungsi ini digunakan untuk mengedit jumlah barang. Total harga barang juga disesuaikan
-       dengan jumlah yang diedit.
+       This item edit the quantity of an item
+
+       item_name : string (name of the item that we want to change the quantity)
+       new_item_qty : the new quantity of the item 
        '''
        try:
             self.df.loc[self.df['Item'] == item_name, 'Qty'] = int(new_item_qty)
@@ -89,7 +96,7 @@ class Transaction:
        except:
             pass
     '''
-    # Saya tidak menerapkan fungsi untuk mengganti harga karena customer tidak seharusnya dapat mengganti harga
+    # There is no function to update the price because customer should not be able to change the price
 
     def update_item_price(self, item_name, new_item_price):
        try:
@@ -105,26 +112,27 @@ class Transaction:
     
     def reset_transaction(self):
       '''
-      Fungsi ini digunakan untuk menghapus seluruh pesanan sekaligus.
+      This function reset the trolley
       
       '''
       self.df = self.df.drop(self.df.index)
     
     def check_order(self):
         '''
-        Fungsi ini digunakan untuk memeriksa pesanan. Apabila pesanan masih kosong, fungsi ini
-        akan memberitahu bahwa terdapat kesalahan input data. Jika tidak ada masalah, fungsi 
-        ini akan memberitahu bahwa pesmesanan sudah benar.
+        This function gives information about all the items in the trolley
         '''
 
         if self.df.empty:
-            self.message = 'Terdapat kesalahan input data'
+            self.message = 'There is an error in the input'
         else:
             if self.df['Item'].apply(lambda x: isinstance(x, str)).all() and self.df['Qty'].apply(lambda x: isinstance(x, int)).all() and self.df['Price'].apply(lambda x: isinstance(x, int)).all():
-                self.message = 'Pemesanan sudah benar'
+                self.message = 'Order is valid'
         return self.df, self.message
     
     def total_prices(self):
+      '''
+      This function gives the total price
+      '''
       try:
             if not self.df.empty:
                 total = self.df['Total Prices'].sum()
@@ -140,18 +148,4 @@ class Transaction:
       except:
             pass
 
-'''
 
-Test case
-
-
-buy = Transaction('barang.json')
-buy.add_item("Apel", 5)
-buy.add_item("Jeruk", 6)
-buy.update_item_qty("Jeruk", 7)
-buy.update_item_name("Jeruk", "Pisang")
-buy.reset_transaction()
-
-print(buy.check_order(), buy.total_prices())
-
-'''
