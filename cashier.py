@@ -2,10 +2,10 @@ import pandas as pd
 import json
 
 class Transaction:
-    def __init__(self, item_list, columns=['Item', 'Price', 'Qty', 'Total Prices']):
+    def __init__(self, columns=['Item', 'Price', 'Qty', 'Total Prices']):
         self.df = pd.DataFrame(columns=columns)
         self.message = 'Order is valid'
-        self.item_list = item_list
+        self.item_list = 'barang.json'
     
     def get_price(self, search_name):
         '''
@@ -22,6 +22,14 @@ class Transaction:
                 if data['item'] == search_name:
                     return data['price']  
             return None
+    
+    def see_available_items(self):
+        with open(self.item_list, 'r') as file:
+            data_list = json.load(file)
+        available_items = pd.DataFrame(data_list)
+        print(available_items)
+    
+
 
     def add_item(self, item,  qty):
         '''
@@ -129,7 +137,7 @@ class Transaction:
                 self.message = 'Order is valid'
         return self.df, self.message
     
-    def total_prices(self):
+    def total_price(self):
       '''
       This function gives the total price
       '''
