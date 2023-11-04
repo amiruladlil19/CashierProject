@@ -52,6 +52,7 @@ Customers will get discounts as follows:
 - If the total price is 300000 units, there will be 8& discount
 - If the total price is 500000 units, there will be 10% discount 
 
+
 ## Conclusion
 
 We have created the features for the self-service cashier app. Based on the test case, the features have reach the objectives. However, a feature to just add the quanitity of the item if a customer input an item that already exists in the trolley is still needed and can be updated in the future. Moreover, for the app to be usable, it still needs many things such as the database for the items and UI for the users. 
